@@ -107,18 +107,21 @@
             font-size: 16px;
         }
 
-        #photo {
-            width: 100%;
-            border-radius: 20px;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-            border: 4px solid white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-            image-rendering: crisp-edges;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: pixelated;
-        }
+#photo {
+    width: 100%;
+    border-radius: 20px;
+    aspect-ratio: 1/1;
+    object-fit: cover; /* это оставляем */
+    border: 4px solid white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+    /* ВОТ ЭТО ДОБАВЛЯЕМ ДЛЯ КАЧЕСТВА */
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    /* Форсируем высокое качество при сжатии */
+    -ms-interpolation-mode: bicubic;
+}
 
         #photo:hover {
             transform: scale(1.02);
@@ -521,5 +524,6 @@
 </body>
 
 </html>
+
 
 
