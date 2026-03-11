@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Наши воспоминания ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffd1d1, #ffe6f0);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* АНИМАЦИЯ ПЛАВАЮЩИХ СЕРДЕЧЕК */
+        .heart {
+            position: fixed;
+            font-size: 20px;
+            color: #ff6b6b;
+            animation: heartFloat 4s ease-in-out forwards;
+            pointer-events: none;
+            z-index: 1000;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+        }
+
+        @keyframes heartFloat {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-200px) rotate(20deg);
+                opacity: 0;
+            }
+        }
+
+        /* АНИМАЦИЯ ПОЯВЛЕНИЯ ФОТО */
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .photo-box {
+            background: white;
+            border-radius: 30px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 15px 30px rgba(212, 78, 78, 0.25);
+            width: 90%;
+            max-width: 350px;
+            animation: fadeInScale 0.5s ease-out;
+        }
+
+        h1 {
+            color: #d44e4e;
+            font-size: 28px;
+            margin: 15px 0 5px;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+            animation: fadeInScale 0.5s ease-out;
+        }
+
+        .counter-card {
+            background: white;
+            border-radius: 25px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 10px 25px rgba(212, 78, 78, 0.2);
+            width: 90%;
+            max-width: 320px;
+            text-align: center;
+            animation: fadeInScale 0.5s ease-out 0.2s both;
+        }
+
+        .days-number {
+            font-size: 54px;
+            font-weight: bold;
+            color: #d44e4e;
+            line-height: 1.2;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .days-label {
+            color: #b34545;
+            font-size: 16px;
+        }
+
+        #photo {
+            width: 100%;
+            border-radius: 20px;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        #photo:hover {
+            transform: scale(1.02);
+        }
+
+        #caption {
+            text-align: center;
+            margin: 15px 0 5px;
+            font-size: 18px;
+            color: #d44e4e;
+            font-style: italic;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            background: white;
+            border: none;
+            padding: 15px 28px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #d44e4e;
+            box-shadow: 0 8px 20px rgba(212, 78, 78, 0.2);
+            cursor: pointer;
+            transition: 0.3s;
+            border: 2px solid #ffe1e1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 107, 107, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        button:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(212, 78, 78, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* КНОПКА ДЛЯ МУЗЫКИ */
+        .music-btn {
+            background: #ff9e9e;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .music-btn:hover {
+            background: #ff8585;
+            transform: scale(1.05);
+        }
+
+        .music-btn.playing {
+            background: #ff6b6b;
+            animation: musicPulse 1.5s infinite;
+        }
+
+        @keyframes musicPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+
+        .message-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 20px;
+            margin: 15px 0;
+            color: #b34545;
+            font-size: 18px;
+            text-align: center;
+            width: 90%;
+            max-width: 350px;
+            border: 2px solid white;
+            box-shadow: 0 5px 15px rgba(212, 78, 78, 0.15);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeInScale 0.5s ease-out 0.4s both;
+        }
+
+        .footer {
+            margin: 20px 0;
+            color: #b34545;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* ИНДИКАТОР ЗАГРУЗКИ */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffe1e1;
+            border-top: 3px solid #ff6b6b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Подключаем Telegram -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <h1 id="greeting">❤️ Наши воспоминания ❤️</h1>
+    <div class="subtitle">Ты — лучшее, что со мной случилось</div>
+
+    <!-- Счетчик дней -->
+    <div class="counter-card">
+        <div style="font-size: 18px; margin-bottom: 5px;">Мы вместе</div>
+        <div class="days-number" id="daysCounter">0</div>
+        <div class="days-label">дней счастья ✨</div>
+    </div>
+
+    <!-- Кнопка музыки -->
+    <button class="music-btn" id="musicBtn" onclick="toggleMusic()">
+        🎵 Включить музыку
+    </button>
+
+    <!-- Фото -->
+    <div class="photo-box" id="photoBox">
+        <img id="photo" src="" alt="Наше фото">
+        <div id="caption">Нажимай на кнопочки</div>
+    </div>
+
+    <!-- Кнопки -->
+    <div class="buttons">
+        <button onclick="nextPhoto()">📸 Дальше</button>
+        <button onclick="randomLove()">💌 Все для тебя</button>
+        <button onclick="createHeartShower()">💝 Сердечки</button>
+    </div>
+
+    <!-- Сообщение -->
+    <div class="message-box" id="loveMessage">
+        Ты самая лучшая!
+    </div>
+
+    <div class="footer">с любовью, твой Тимурка ❤️</div>
+
+    <!-- Аудио элемент (НЕВИДИМЫЙ) -->
+    <audio id="bgMusic" loop preload="auto">
+        <!-- ЗДЕСЬ ВСТАВЬ ССЫЛКУ НА МУЗЫКУ -->
+        <source src="https://limewire.com/d/xExEK#wyAY4s0FMk" type="audio/mpeg">
+        Твой браузер не поддерживает аудио
+    </audio>
+
+    <script>
+        // ============================================
+        // ⚠️ ВАЖНО - СЮДА ВСТАВЛЯЙ СВОИ ФОТО ⚠️
+        // ============================================
+
+        const photos = [
+            {
+                url: "https://i.postimg.cc/4nDJgmNZ/ph5.jpg",  // ← ЗАМЕНИ ЭТО
+                text: "💕 Мне очень нравится эта фотография"
+            },
+            {
+                url: "https://i.postimg.cc/5jhxV6NM/ph3.jpg",     // ← ЗАМЕНИ ЭТО
+                text: "🌹 А тута 14 февраля, наслаждаемся и кушкаем пиццочку"
+            },
+            {
+                url: "https://i.postimg.cc/3d23JYdd/ph1.jpg",        // ← ЗАМЕНИ ЭТО
+                text: "🎬 Ты как кинозвезда, я твой режисер"
+            },
+            {
+                url: "https://i.postimg.cc/Z0GTSCKS/ph4.jpg",       // ← ЗАМЕНИ ЭТО
+                text: "💖 Тут ты вообще милашка"
+            },
+            {
+                url: "https://i.postimg.cc/Dm92T8y3/ph2.jpg",         // ← ЗАМЕНИ ЭТО
+                text: "💕 Мега красиви, вайбую от тебя"
+            }
+        ];
+
+        // Романтичные сообщения
+        const loveMessages = [
+            "Ты делаешь мой мир ярче ✨",
+            "Спасибо, что ты есть ❤️",
+            "Твоя улыбка сводит меня с ума",
+            "Я счастлив, когда ты рядом",
+            "Ты самая красивая на свете",
+            "Ты - мое вдохновение",
+            "Каждый день с тобой - подарок",
+            "Я тебя очень сильно люблю",
+            "Ты лучше всех!"
+        ];
+
+        function calculateDays() {
+            const startDate = new Date(2025, 6, 31);
+            const today = new Date();
+            const diffTime = today - startDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays >= 0 ? diffDays : 0;
+        }
+
+        const audio = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                musicBtn.textContent = '🎵 Включить музыку';
+                musicBtn.classList.remove('playing');
+            } else {
+                audio.play().catch(e => {
+                    console.log("Автовоспроизведение заблокировано, нужно нажатие");
+                    // Если не получается, показываем подсказку
+                    alert('Нажми на кнопку еще раз, чтобы включить музыку 🎵');
+                });
+                musicBtn.textContent = '🎵 Выключить музыку';
+                musicBtn.classList.add('playing');
+
+                // Создаем сердечки при включении музыки
+                for(let i = 0; i < 5; i++) {
+                    setTimeout(() => createHeart(), i * 200);
+                }
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // ============================================
+        // 💝 ФУНКЦИИ ДЛЯ СЕРДЕЧЕК
+        // ============================================
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+
+            // Случайные символы сердечек
+            const hearts = ['❤️', '💕', '💗', '💓', '💖', '💘', '💝', '💞'];
+            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+
+            // Случайный размер
+            const size = Math.floor(Math.random() * 20) + 20; // 20-40px
+            heart.style.fontSize = size + 'px';
+
+            // Случайная позиция
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.top = window.innerHeight - 50 + 'px';
+
+            // Случайная скорость
+            const duration = Math.random() * 3 + 3; // 3-6 секунд
+            heart.style.animation = `heartFloat ${duration}s ease-in-out forwards`;
+
+            document.body.appendChild(heart);
+
+            // Удаляем сердечко после анимации
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+
+        // Ливень из сердечек
+        function createHeartShower() {
+            for(let i = 0; i < 15; i++) {
+                setTimeout(() => createHeart(), i * 100);
+            }
+
+            // Романтичное сообщение
+            document.getElementById('loveMessage').innerHTML =
+                'Лови порцию сердечек! 💕💕💕';
+
+            // Если музыка не играет, предложить включить
+            if (!isPlaying) {
+                setTimeout(() => {
+                    if(confirm('Включить музыку для настроения? 🎵')) {
+                        toggleMusic();
+                    }
+                }, 500);
+            }
+        }
+
+        // ============================================
+        // ОСНОВНЫЕ ФУНКЦИИ ПРИЛОЖЕНИЯ
+        // ============================================
+
+        // Telegram Mini App
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        // Приветствие с именем
+        const user = tg.initDataUnsafe?.user;
+        if (user && user.first_name) {
+            document.getElementById('greeting').innerHTML =
+                `❤️ Привет, ${user.first_name}! ❤️`;
+        }
+
+        let currentPhotoIndex = 0;
+
+        // Обновляем счетчик дней
+        document.getElementById('daysCounter').textContent = calculateDays();
+
+        // Функция показа следующего фото
+        function nextPhoto() {
+            currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+            const photo = photos[currentPhotoIndex];
+
+            // Анимация загрузки
+            document.getElementById('photoBox').style.animation = 'none';
+            document.getElementById('photoBox').offsetHeight;
+            document.getElementById('photoBox').style.animation = 'fadeInScale 0.5s ease-out';
+
+            document.getElementById('photo').src = photo.url;
+            document.getElementById('caption').textContent = photo.text;
+
+            // Создаем одно сердечко при смене фото
+            createHeart();
+        }
+
+        // Функция случайного признания
+        function randomLove() {
+            const randomIndex = Math.floor(Math.random() * loveMessages.length);
+            document.getElementById('loveMessage').textContent = loveMessages[randomIndex];
+
+            // Создаем несколько сердечек
+            for(let i = 0; i < 3; i++) {
+                setTimeout(() => createHeart(), i * 150);
+            }
+        }
+
+        // Показываем первое фото при загрузке
+        window.onload = function() {
+            if (photos.length > 0) {
+                document.getElementById('photo').src = photos[0].url;
+                document.getElementById('caption').textContent = photos[0].text;
+            }
+
+            // Создаем несколько сердечек при запуске
+            setTimeout(() => {
+                for(let i = 0; i < 8; i++) {
+                    setTimeout(() => createHeart(), i * 300);
+                }
+            }, 1000);
+        };
+
+        // Создаем сердечки при движении мышки (для веб-версии)
+        document.addEventListener('mousemove', function(e) {
+            if(Math.random() < 0.05) { // 5% шанс при движении
+                createHeart();
+            }
+        });
+
+        // Для мобильных устройств - при тапе
+        document.addEventListener('touchstart', function(e) {
+            if(Math.random() < 0.1) { // 10% шанс при касании
+                createHeart();
+            }
+        });
+    </script>
+</body>
+</html>
